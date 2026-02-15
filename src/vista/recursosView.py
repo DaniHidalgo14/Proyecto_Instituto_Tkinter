@@ -1,10 +1,14 @@
 import customtkinter as ctk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from config.settings import materiales, aulas, asignaturas
+from src.controlador.mats_controller import MatsController
+from src.vista.InsertViews.MatsInsertView import MatsInsertView
+
 
 class RecursosView(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
+        self.matcontroller = MatsController()
         self.construir_contenedor()
 
     def construir_contenedor(self):
@@ -36,13 +40,13 @@ class RecursosView(ctk.CTkFrame):
         botonesCRUD.pack_propagate(False)
         botonesCRUD.pack(padx=10, pady=10)
 
-        anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green")
+        anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green", command=self.insertar_nuevo)
         anadirBtn.pack(side="left", padx=10)
 
         modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue")
         modifBtn.pack(side="left", padx=20)
 
-        eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red")
+        eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red", command=self.eliminar_material)
         eliminarBtn.pack(side="right", padx=10)
 
         frame_materiales = ctk.CTkFrame(parent, width=530, height=250)
@@ -161,12 +165,29 @@ class RecursosView(ctk.CTkFrame):
 
         self.obtener_datos_asignaturas()
 
+    #FUNCIONES PARA MOSTRAR, ACTUALIZAR, INSERTAR Y BORRAR MATERIALES
     def obtener_datos_materiales(self):
-        for datos_materiales in materiales.values():
-            nombre = datos_materiales["Nombre"]
-            costo = datos_materiales["Costo"]
-            aula = datos_materiales["Aula"]
-            self.tabla_materiales.insert("", "end", values=(nombre, costo, aula))
+
+        for item in self.tabla_materiales.get_children():
+            self.tabla_materiales.delete(item)
+
+        for id, nombre, coste, cod_aula in self.matcontroller.listar_materiales():
+            self.tabla_materiales.insert("", "end", iid=id, values=(nombre, coste, cod_aula))
+
+    def insertar_nuevo(self):
+        vista = MatsInsertView(self.matcontroller, self.obtener_datos_materiales)
+        vista.mainloop()
+
+    def eliminar_material(self):
+        seleccion = self.tabla_materiales.selection()
+
+        if not seleccion: messagebox.showwarning("Error", "Selecciona un objeto")
+        else:
+            cod_mat = seleccion[0]
+
+            mensaje = self.matcontroller.eliminar(cod_mat)
+            messagebox.showinfo("Informacion", mensaje)
+            self.obtener_datos_materiales()
 
     def obtener_datos_aulas(self):
         for datos_aulas in aulas.values():

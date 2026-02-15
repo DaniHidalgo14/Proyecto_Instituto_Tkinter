@@ -36,7 +36,7 @@ class AlumModel:
     def eliminar(self, id_alumno) -> None:
         """Elimina un alumno por ID"""
         with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn. cursor()
+            cursor = conn.cursor()
             cursor.execute(DELETE_ALUMNO, (id_alumno,))
             conn.commit()
 
@@ -64,12 +64,8 @@ class AlumModel:
             else:
                 return True
 
-    def comprobar_cod_alum(self, cod_alum) -> bool:
+    def obtener_ids_alumnos(self):
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            cursor.execute('select nombreCompleto from alumnos where cod_alum = ?', (cod_alum,))
-            alumno = cursor.fetchone()
-            if alumno is None:
-                return False
-            else:
-                return True
+            cursor.execute("SELECT cod_alum FROM alumnos ORDER BY cod_alum")
+            return [fila[0] for fila in cursor.fetchall()]

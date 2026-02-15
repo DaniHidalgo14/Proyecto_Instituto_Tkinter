@@ -7,7 +7,7 @@ CREATE_TABLE_ALUMNOS = '''create table if not exists alumnos(
     cod_curso integer references curso(cod_curso)
 );'''
 
-INSERT_ALUMNOS = '''INSERT INTO alumnos (nombreCompleto, edad, telefono, direccion)
+INSERT_ALUMNOS = '''INSERT INTO alumnos (nombreCompleto, edad, telefono, direccion, cod_curso)
 VALUES (?, ?, ?, ?, ?);
 '''
 

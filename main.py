@@ -11,6 +11,8 @@ app.mainloop()
 
 '''with sqlite3.connect(DB_PATH) as conn:
     cursor = conn.cursor()
-    cursor.execute('select * from alumnos')
-    usuarios = cursor.fetchall()
-    print(usuarios)'''
+    cursor.execute('select cod_mat from materiales')
+    materiales = cursor.fetchall()
+    print(materiales)'''
+
+#TODO: TERMINAR CRUD MATERIALES

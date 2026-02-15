@@ -16,7 +16,7 @@ class AlumController:
         if not nombre or not edad or not telefono or not direccion or not cod_curso:
             return False, "Todos los campos son obligatorios", id_alumno_nuevo
 
-        exito, id_alumno_nuevo = self.model.crear(nombre, edad, telefono, direccion, cod_curso)
+        exito, id_alumno_nuevo = self.model.insertar_alumno(nombre, edad, telefono, direccion, cod_curso)
 
         if exito:
             return True, "Alumno insertado exitosamente", id_alumno_nuevo
@@ -40,5 +40,5 @@ class AlumController:
     def comprobar_curso(self, cod_curso) -> bool:
         return self.model.comprobar_cod_curso(cod_curso)
 
-    def comprobar_alumno(self, cod_alum):
-        return self.model.comprobar_cod_alum(cod_alum)
+    def obtener_ids_alumnos(self):
+        return self.model.obtener_ids_alumnos()
