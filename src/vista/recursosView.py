@@ -1,7 +1,12 @@
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 from config.settings import materiales, aulas, asignaturas
+from src.controlador.asign_controller import AsignsController
+from src.controlador.aulas_controller import AulasController
 from src.controlador.mats_controller import MatsController
+from src.vista.EditViews.AulasEditView import AulasEditView
+from src.vista.EditViews.MatEditView import MatEditView
+from src.vista.InsertViews.AulasInsertView import AulasInsertView
 from src.vista.InsertViews.MatsInsertView import MatsInsertView
 
 
@@ -9,6 +14,8 @@ class RecursosView(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
         self.matcontroller = MatsController()
+        self.aulas_controller = AulasController()
+        self.asings_controller = AsignsController()
         self.construir_contenedor()
 
     def construir_contenedor(self):
@@ -43,7 +50,7 @@ class RecursosView(ctk.CTkFrame):
         anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green", command=self.insertar_nuevo)
         anadirBtn.pack(side="left", padx=10)
 
-        modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue")
+        modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue", command=self.editar_material)
         modifBtn.pack(side="left", padx=20)
 
         eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red", command=self.eliminar_material)
@@ -86,13 +93,13 @@ class RecursosView(ctk.CTkFrame):
         botonesCRUD.pack_propagate(False)
         botonesCRUD.pack(padx=10, pady=10)
 
-        anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green")
+        anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green", command=self.insertar_nueva_aula)
         anadirBtn.pack(side="left", padx=10)
 
-        modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue")
+        modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue", command=self.actualizar_aula)
         modifBtn.pack(side="left", padx=20)
 
-        eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red")
+        eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red", command=self.eliminar_aula)
         eliminarBtn.pack(side="right", padx=10)
 
         frame_aulas = ctk.CTkFrame(parent, width=530, height=250)
@@ -151,16 +158,18 @@ class RecursosView(ctk.CTkFrame):
         scrollbar = ttk.Scrollbar(self.datos_asignaturas)
         scrollbar.pack(side="right", fill="y")
 
-        self.tabla_asignaturas = ttk.Treeview(self.datos_asignaturas, columns=("Nombre", "Horas", "Profesor"),
+        self.tabla_asignaturas = ttk.Treeview(self.datos_asignaturas, columns=("Nombre", "Horas", "Profesor", "Curso"),
                                         show="headings", yscrollcommand=scrollbar.set)
 
         self.tabla_asignaturas.heading("Nombre", text="Nombre")
         self.tabla_asignaturas.heading("Horas", text="Horas")
+        self.tabla_asignaturas.heading("Curso", text="Curso")
         self.tabla_asignaturas.heading("Profesor", text="Profesor")
 
-        self.tabla_asignaturas.column("Nombre", width=100)
+        self.tabla_asignaturas.column("Nombre", width=200)
         self.tabla_asignaturas.column("Horas", width=100)
-        self.tabla_asignaturas.column("Profesor", width=100)
+        self.tabla_asignaturas.column("Curso", width=50)
+        self.tabla_asignaturas.column("Profesor", width=50)
         self.tabla_asignaturas.pack(fill="both", expand=True)
 
         self.obtener_datos_asignaturas()
@@ -178,6 +187,16 @@ class RecursosView(ctk.CTkFrame):
         vista = MatsInsertView(self.matcontroller, self.obtener_datos_materiales)
         vista.mainloop()
 
+    def editar_material(self):
+        seleccion = self.tabla_materiales.selection()
+
+        if not seleccion: messagebox.showwarning("Error", "Seleccione un item")
+        else:
+
+            cod_mat = seleccion[0]
+            vista = MatEditView(self.matcontroller, self.obtener_datos_materiales, cod_mat)
+            vista.mainloop()
+
     def eliminar_material(self):
         seleccion = self.tabla_materiales.selection()
 
@@ -190,14 +209,46 @@ class RecursosView(ctk.CTkFrame):
             self.obtener_datos_materiales()
 
     def obtener_datos_aulas(self):
-        for datos_aulas in aulas.values():
-            nombre = datos_aulas["Nombre"]
-            curso = datos_aulas["Curso"]
-            self.tabla_aulas.insert("", "end", values=(nombre, curso))
+        for item in self.tabla_aulas.get_children():
+            self.tabla_aulas.delete(item)
+
+        for aula in self.aulas_controller.listar_aulas():
+            self.tabla_aulas.insert("", "end", iid=aula[0], values=(aula[1], aula[2]))
+
+    def insertar_nueva_aula(self):
+        vista = AulasInsertView(self.aulas_controller, self.obtener_datos_aulas)
+        vista.mainloop()
+
+    def actualizar_aula(self):
+        seleccion = self.tabla_aulas.selection()
+
+        if not seleccion:
+            messagebox.showerror("Error", "Seleccione un item")
+        else:
+            codigo = seleccion[0]
+
+            vista = AulasEditView(self.aulas_controller, self.obtener_datos_aulas, codigo)
+            vista.mainloop()
+
+    def eliminar_aula(self):
+        seleccion = self.tabla_aulas.selection()
+
+        if not seleccion:
+            messagebox.showerror("Error", "Seleccione un item")
+        else:
+            codigo = seleccion[0]
+
+            mensaje = self.aulas_controller.eliminar(codigo)
+            messagebox.showinfo("Informacion", mensaje)
+            self.obtener_datos_aulas()
 
     def obtener_datos_asignaturas(self):
-        for datos_asignaturas in asignaturas.values():
-            nombre = datos_asignaturas["Nombre"]
-            horas = datos_asignaturas["Horas"]
-            profesor = datos_asignaturas["Profesor"]
-            self.tabla_asignaturas.insert("", "end", values=(nombre, horas, profesor))
+        for asignatura in self.asings_controller.listar_asignaturas():
+            self.tabla_asignaturas.insert("", "end", iid=asignatura[0], values=(asignatura[1], asignatura[2], asignatura[3], asignatura[4]))
+
+    def eliminar_asignatura(self):
+        seleccion = self.tabla_asignaturas.selection()
+
+        if not seleccion:
+            messagebox.showerror("Error", "Seleccione un item")
+        else:
