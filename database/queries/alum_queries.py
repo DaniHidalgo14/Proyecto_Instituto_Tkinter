@@ -21,4 +21,9 @@ UPDATE_ALUMNO = '''update alumnos
                     set nombreCompleto = ?, edad = ?, telefono = ?, direccion = ?, cod_curso = ?
                     where cod_alum = ?'''
 
-OBTENER_CALIFICACIONES = '''select '''
+OBTENER_CALIFICACIONES = '''
+                        SELECT a.nombre, c.trimestre1, c.trimestre2, c.trimestre3
+                        FROM calificaciones c
+                        JOIN asignaturas a ON c.cod_asign = a.cod_asign
+                        WHERE c.cod_alum = ?
+                    '''

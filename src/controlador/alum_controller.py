@@ -37,8 +37,12 @@ class AlumController:
         self.model.editar(item,  nombre, edad, telefono, direccion, cod_curso)
         return True, "Alumno editado"
 
-    def comprobar_curso(self, cod_curso) -> bool:
-        return self.model.comprobar_cod_curso(cod_curso)
+    def listar_calificaciones(self, cod_alum):
+        notas = self.model.obtener_calificaciones(cod_alum)
+        return notas
 
-    def obtener_ids_alumnos(self):
-        return self.model.obtener_ids_alumnos()
+    def exportar_a_csv(self, cod_alum):
+        self.model.exportar_notas_alumno_csv(cod_alum)
+
+    def importar_datos(self, ruta_csv):
+        self.model.importar_notas_alumno_csv(ruta_csv)

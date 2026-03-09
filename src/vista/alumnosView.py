@@ -1,13 +1,10 @@
-from tkinter import messagebox
+from tkinter import messagebox, ttk, filedialog
 
 import customtkinter as ctk
 from config.settings import FONDO_FRAME, alumnos
 from src.controlador.alum_controller import AlumController
 from src.vista.EditViews.AlumEditViews import EditarAlumno
 from src.vista.InsertViews.AlumInsertView import InsertaAlumno
-
-
-#➕❌🔄⬅️➡️
 
 class Alumnos(ctk.CTkFrame):
     def __init__(self, parent):
@@ -17,6 +14,7 @@ class Alumnos(ctk.CTkFrame):
         self.indice = 0
         self.registros = self.controller.listar_alumnos()
         self.obtener_datos()
+        self.obtener_calificaciones()
 
     def construir_contenedor(self):
 
@@ -42,7 +40,7 @@ class Alumnos(ctk.CTkFrame):
         frame_alumno.configure(fg_color="black")
         frame_alumno.pack(pady=10, fill="both", expand=True)
 
-        frame_botones = ctk.CTkFrame(frame_alumno, width=530, height=50)
+        frame_botones = ctk.CTkFrame(frame_alumno, width=550, height=50)
         frame_botones.pack_propagate(False)
         frame_botones.configure(fg_color="black")
         frame_botones.pack(pady=10, padx=10)
@@ -50,6 +48,12 @@ class Alumnos(ctk.CTkFrame):
 
         self.anteriorBtn = ctk.CTkButton(frame_botones, text="⬅️ Anterior", text_color="white", hover_color="blue", command=self.anterior)
         self.anteriorBtn.pack(side="left")
+
+        exportarBtn = ctk.CTkButton(frame_botones, text="📤 Exportar", text_color="black", fg_color="yellow", hover_color="green", command=self.exportar)
+        exportarBtn.pack(side="left", padx=5)
+
+        importarBtn = ctk.CTkButton(frame_botones, text="Importar", text_color="white", fg_color="blue", command=self.importar)
+        importarBtn.pack(side="left", padx=5)
 
         self.siguienteBtn = ctk.CTkButton(frame_botones, text="Siguiente ➡️", text_color="white", hover_color="blue", command=self.siguiente)
         self.siguienteBtn.pack(side="right")
@@ -61,15 +65,28 @@ class Alumnos(ctk.CTkFrame):
 
         self.calificaciones = ctk.CTkFrame(frame_alumno, width=350, height=200)
         self.calificaciones.pack_propagate(False)
-        self.calificaciones.configure(fg_color="blue")
+        self.calificaciones.configure(fg_color="white")
         self.calificaciones.pack(pady=10, side="left", padx=10, fill="both", expand=True)
+
+        scrollbar = ttk.Scrollbar(self.calificaciones)
+        scrollbar.pack(side="right", fill="y")
+
+        self.tabla = ttk.Treeview(self.calificaciones,
+                                  columns=("Asignatura", "1º Trimestre", "2º Trimestre", "3º Trimestre"),
+                                  show="headings", yscrollcommand=scrollbar.set)
+
+        self.tabla.heading("Asignatura", text="Asignatura")
+        self.tabla.heading("1º Trimestre", text="1º Trimestre")
+        self.tabla.heading("2º Trimestre", text="2º Trimestre")
+        self.tabla.heading("3º Trimestre", text="3º Trimestre")
+
+        self.tabla.column("Asignatura", width=200)
+        self.tabla.column("1º Trimestre", width=50)
+        self.tabla.column("2º Trimestre", width=50)
+        self.tabla.column("3º Trimestre", width=50)
 
     def clear(self):
         for widget in self.datos_alumno.winfo_children():
-            widget.destroy()
-
-    def limpiar_calificaciones(self):
-        for widget in self.calificaciones.winfo_children():
             widget.destroy()
 
     def actualizar_datos(self):
@@ -97,19 +114,28 @@ class Alumnos(ctk.CTkFrame):
 
     def obtener_calificaciones(self):
         alumno = self.registros[self.indice]
-        self.limpiar_calificaciones()
 
+        self.tabla.pack(fill="both", expand=True)
 
+        for item in self.tabla.get_children():
+           self.tabla.delete(item)
+
+        notas = self.controller.listar_calificaciones(alumno[0])
+
+        for nota in notas:
+            self.tabla.insert("", "end", values=(nota[0], nota[1], nota[2], nota[3]))
 
     def siguiente(self):
         if self.indice < len(self.registros) - 1:
             self.indice += 1
             self.obtener_datos()
+            self.obtener_calificaciones()
 
     def anterior(self):
         if self.indice > 0:
             self.indice -= 1
             self.obtener_datos()
+            self.obtener_calificaciones()
 
     def eliminar_alumno(self):
         alumno = self.registros[self.indice]
@@ -127,3 +153,20 @@ class Alumnos(ctk.CTkFrame):
     def insertar_alumno(self):
         vista_alumno = InsertaAlumno(self.controller, self.obtener_datos)
         vista_alumno.mainloop()
+
+    def exportar(self):
+        alumno = self.registros[self.indice]
+
+        self.controller.exportar_a_csv(alumno[0])
+
+    def seleccionar_csv(self):
+        ruta = filedialog.askopenfilename(
+            title="Selecciona el archivo CSV",
+            filetypes=[("Archivos CSV", "*.csv")]
+        )
+        return ruta
+
+    def importar(self):
+        ruta = self.seleccionar_csv()
+        self.controller.importar_datos(ruta)
+        self.obtener_calificaciones()

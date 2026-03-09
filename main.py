@@ -11,9 +11,13 @@ app.mainloop()
 
 '''with sqlite3.connect(DB_PATH) as conn:
     cursor = conn.cursor()
-    cursor.execute('select * from alumnos')
-    materiales = cursor.fetchall()
-    print(materiales)'''
+    cursor.execute("""
+                        SELECT a.nombre, c.trimestre1, c.trimestre2, c.trimestre3
+                        FROM calificaciones c
+                        JOIN asignaturas a ON c.cod_asign = a.cod_asign
+                        WHERE c.cod_alum = ?
+                    """, (1,))
+    todos = cursor.fetchall()
+    print(todos)'''
 
-#TODO: TERMINAR REDIMENSIONADO DE FRAMES (TABVIEW, PROFESORES Y ALUMNOS)
-#TODO: TERMINAR FRAME DE ALUMNOS (MOSTRAR CALIFICACIONES)
+#TODO: CORREGIR ERROR DE ACTUALIZAR CALIFICACIONES
