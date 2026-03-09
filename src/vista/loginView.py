@@ -13,7 +13,7 @@ class Login(ctk.CTkFrame):
 
     def construir_contenedor(self):
 
-        frame = ctk.CTkFrame(self)
+        frame = ctk.CTkFrame(self, width=150, height=150)
         frame.configure(fg_color="black")
         frame.pack(pady=20)
 

@@ -12,12 +12,15 @@ class AsignsModel:
             conn.commit()
             return "Asignatura insertada correctamente"
 
-    def editar_asignatura(self, cod_asign, nombre, horas, cod_curso, cod_prof):
+    def editar_asignatura(self, cod_asign, nombre, horas, cod_prof, cod_curso):
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            cursor.execute(UPDATE_ASIGN, (nombre, horas, cod_curso, cod_prof, cod_asign))
+            correcto = cursor.execute(UPDATE_ASIGN, (nombre, horas, cod_prof, cod_curso, cod_asign))
             conn.commit()
-            return f"Asignatura actualizada: {cod_asign}"
+            if correcto:
+                return f"Asignatura actualizada: {cod_asign}"
+            else:
+                return "No actualizado"
 
     def eliminar_asignatura(self, cod):
         with sqlite3.connect(DB_PATH) as conn:

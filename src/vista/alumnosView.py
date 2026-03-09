@@ -14,8 +14,8 @@ class Alumnos(ctk.CTkFrame):
         super().__init__(parent)
         self.controller = AlumController()
         self.construir_contenedor()
-        self.posicion = 1
-        self.id_alumno = 1
+        self.indice = 0
+        self.registros = self.controller.listar_alumnos()
         self.obtener_datos()
 
     def construir_contenedor(self):
@@ -40,7 +40,7 @@ class Alumnos(ctk.CTkFrame):
         frame_alumno = ctk.CTkFrame(self, width=530, height=250)
         frame_alumno.pack_propagate(False)
         frame_alumno.configure(fg_color="black")
-        frame_alumno.pack(pady=10)
+        frame_alumno.pack(pady=10, fill="both", expand=True)
 
         frame_botones = ctk.CTkFrame(frame_alumno, width=530, height=50)
         frame_botones.pack_propagate(False)
@@ -54,23 +54,30 @@ class Alumnos(ctk.CTkFrame):
         self.siguienteBtn = ctk.CTkButton(frame_botones, text="Siguiente ➡️", text_color="white", hover_color="blue", command=self.siguiente)
         self.siguienteBtn.pack(side="right")
 
-        self.datos_alumno = ctk.CTkFrame(frame_alumno, width=530, height=200)
+        self.datos_alumno = ctk.CTkFrame(frame_alumno, width=350, height=200)
         self.datos_alumno.pack_propagate(False)
         self.datos_alumno.configure(fg_color="white")
-        self.datos_alumno.pack(pady=10, side="top", padx=10)
+        self.datos_alumno.pack(pady=10, side="left", padx=10, fill="both", expand=True)
+
+        self.calificaciones = ctk.CTkFrame(frame_alumno, width=350, height=200)
+        self.calificaciones.pack_propagate(False)
+        self.calificaciones.configure(fg_color="blue")
+        self.calificaciones.pack(pady=10, side="left", padx=10, fill="both", expand=True)
 
     def clear(self):
         for widget in self.datos_alumno.winfo_children():
             widget.destroy()
 
-    def comprobar_id(self):
-        lista_ids = self.controller.obtener_ids_alumnos()
-        if self.id_alumno in lista_ids[self.posicion]:
-            return True
-        else: return False
+    def limpiar_calificaciones(self):
+        for widget in self.calificaciones.winfo_children():
+            widget.destroy()
+
+    def actualizar_datos(self):
+        self.registros = self.controller.listar_alumnos()
 
     def obtener_datos(self):
-        alumno = self.controller.carga_alumno(self.id_alumno)
+        self.actualizar_datos()
+        alumno = self.registros[self.indice]
         self.clear()
 
         nombreLabel = ctk.CTkLabel(self.datos_alumno, text=alumno[1], text_color="black")
@@ -88,35 +95,33 @@ class Alumnos(ctk.CTkFrame):
         cursoLabel = ctk.CTkLabel(self.datos_alumno, text=f"Curso nº:{str(alumno[5])}", text_color="black")
         cursoLabel.pack()
 
+    def obtener_calificaciones(self):
+        alumno = self.registros[self.indice]
+        self.limpiar_calificaciones()
+
+
+
     def siguiente(self):
-        if self.posicion < len(self.lista_ids) - 1 and self.comprobar_id():
-            self.posicion += 1
-            self.id_alumno = self.lista_ids[self.posicion]
-            self.clear()
+        if self.indice < len(self.registros) - 1:
+            self.indice += 1
             self.obtener_datos()
-            self.anteriorBtn.configure(state="normal")
-        else:
-            self.siguienteBtn.configure(state="disabled")
 
     def anterior(self):
-        if self.posicion > 0 and self.comprobar_id():
-            self.posicion -= 1
-            self.id_alumno = self.lista_ids[self.posicion]
-            self.clear()
+        if self.indice > 0:
+            self.indice -= 1
             self.obtener_datos()
-            self.siguienteBtn.configure(state="normal")
-        else:
-            self.anteriorBtn.configure(state="disabled")
 
     def eliminar_alumno(self):
-        respuesta = messagebox.askyesno("Confirmar", f"Desea eliminar el alumno {self.id_alumno}")
+        alumno = self.registros[self.indice]
+        respuesta = messagebox.askyesno("Confirmar", f"Desea eliminar el alumno {alumno[0]}")
 
         if respuesta:
-            self.controller.eliminar_alumno(self.id_alumno)
-            messagebox.showinfo("Informacion", f"Alumno {self.id_alumno} eliminado")
+            self.controller.eliminar_alumno(alumno[0])
+            messagebox.showinfo("Informacion", f"Alumno {alumno[0]} eliminado")
 
     def editar_alumno(self):
-        vista_alumno = EditarAlumno(self.controller, self.obtener_datos, self.id_alumno)
+        alumno = self.registros[self.indice]
+        vista_alumno = EditarAlumno(self.controller, self.obtener_datos, alumno[0])
         vista_alumno.mainloop()
 
     def insertar_alumno(self):

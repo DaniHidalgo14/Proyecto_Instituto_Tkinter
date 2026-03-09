@@ -17,8 +17,8 @@ class AsignsController:
         mensj = self.model.insertar_asignatura(nombre, horas, cod_curso, cod_prof)
         return mensj
 
-    def actualizar_asignatura(self, cod, nombre, horas, cod_curso, cod_prof):
-        mensj = self.model.editar_asignatura(nombre, horas, cod_curso, cod_prof, cod)
+    def actualizar_asignatura(self, cod, nombre, horas, cod_prof, cod_curso):
+        mensj = self.model.editar_asignatura(cod, nombre, horas, cod_prof, cod_curso)
         return mensj
 
     def eliminar(self, cod):

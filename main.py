@@ -11,8 +11,9 @@ app.mainloop()
 
 '''with sqlite3.connect(DB_PATH) as conn:
     cursor = conn.cursor()
-    cursor.execute('select * from asignaturas')
+    cursor.execute('select * from alumnos')
     materiales = cursor.fetchall()
     print(materiales)'''
 
-#TODO: TERMINAR CRUD DE ASIGNATURAS(FUNCIONES EN LA VISTA Y VENTANAS DE INSERCION Y EDICION)
+#TODO: TERMINAR REDIMENSIONADO DE FRAMES (TABVIEW, PROFESORES Y ALUMNOS)
+#TODO: TERMINAR FRAME DE ALUMNOS (MOSTRAR CALIFICACIONES)

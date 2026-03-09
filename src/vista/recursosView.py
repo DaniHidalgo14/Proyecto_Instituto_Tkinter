@@ -6,6 +6,8 @@ from src.controlador.aulas_controller import AulasController
 from src.controlador.mats_controller import MatsController
 from src.vista.EditViews.AulasEditView import AulasEditView
 from src.vista.EditViews.MatEditView import MatEditView
+from src.vista.EditViews.AsignEditView import AsignEditView
+from src.vista.InsertViews.AsignInsertView import AsignInsertView
 from src.vista.InsertViews.AulasInsertView import AulasInsertView
 from src.vista.InsertViews.MatsInsertView import MatsInsertView
 
@@ -15,7 +17,7 @@ class RecursosView(ctk.CTkFrame):
         super().__init__(parent)
         self.matcontroller = MatsController()
         self.aulas_controller = AulasController()
-        self.asings_controller = AsignsController()
+        self.asign_controller = AsignsController()
         self.construir_contenedor()
 
     def construir_contenedor(self):
@@ -24,7 +26,7 @@ class RecursosView(ctk.CTkFrame):
 
         recursos_frames = ctk.CTkTabview(self, width=530, height=300)
         recursos_frames.configure(fg_color="black")
-        recursos_frames.pack(padx=10, pady=10)
+        recursos_frames.pack(padx=10, pady=10, fill="both", expand=True)
 
         recursos_frames.add("Materiales")
         recursos_frames.add("Aulas")
@@ -38,6 +40,7 @@ class RecursosView(ctk.CTkFrame):
         aulas_frame = self.construir_frame_aulas(tab2)
         asignaturas_frame = self.construir_frame_asignaturas(tab3)
 
+    #---------------------------------------------------------------------------------------------------------------------------------
     #FRAME MATERIALES
     #BOTONES AÑADIR, MODIFICAR Y ELIMINAR PARA OPERACIONES CRUD
     #TREEVIEW PARA MOSTRAR LOS DATOS DE LOS MATERIALES DE CADA AULA
@@ -59,12 +62,12 @@ class RecursosView(ctk.CTkFrame):
         frame_materiales = ctk.CTkFrame(parent, width=530, height=250)
         frame_materiales.pack_propagate(False)
         frame_materiales.configure(fg_color="black")
-        frame_materiales.pack(pady=10)
+        frame_materiales.pack(pady=10, fill="both", expand=True)
 
         self.datos_materiales = ctk.CTkFrame(frame_materiales, width=530, height=250)
         self.datos_materiales.pack_propagate(False)
         self.datos_materiales.configure(fg_color="white")
-        self.datos_materiales.pack(pady=10, side="top", padx=10)
+        self.datos_materiales.pack(pady=10, side="top", padx=10, fill="both", expand=True)
 
         scrollbar = ttk.Scrollbar(self.datos_materiales)
         scrollbar.pack(side="right", fill="y")
@@ -84,6 +87,7 @@ class RecursosView(ctk.CTkFrame):
 
         self.obtener_datos_materiales()
 
+    #------------------------------------------------------------------------------------------------------------------------------
     #FRAME AULAS
     #BOTONES AÑADIR, MODIFICAR Y ELIMINAR PARA OPERACIONES CRUD
     #TREEVIEW PARA MOSTRAR LOS DATOS DE LA TABLA AULAS
@@ -105,12 +109,12 @@ class RecursosView(ctk.CTkFrame):
         frame_aulas = ctk.CTkFrame(parent, width=530, height=250)
         frame_aulas.pack_propagate(False)
         frame_aulas.configure(fg_color="black")
-        frame_aulas.pack(pady=10)
+        frame_aulas.pack(pady=10, fill="both", expand=True)
 
         self.datos_aulas = ctk.CTkFrame(frame_aulas, width=530, height=250)
         self.datos_aulas.pack_propagate(False)
         self.datos_aulas.configure(fg_color="white")
-        self.datos_aulas.pack(pady=10, side="top", padx=10)
+        self.datos_aulas.pack(pady=10, side="top", padx=10, fill="both", expand=True)
 
         scrollbar = ttk.Scrollbar(self.datos_aulas)
         scrollbar.pack(side="right", fill="y")
@@ -127,6 +131,7 @@ class RecursosView(ctk.CTkFrame):
 
         self.obtener_datos_aulas()
 
+    #-------------------------------------------------------------------------------------------------------------------------
     #FRAME ASIGNATURAS
     #BOTONES AÑADIR, MODIFICAR Y ELIMINAR PARA OPERACIONES CRUD
     #TREEVIEW PARA MOSTRAR DATOS DE LA TABLA ASIGNATURAS
@@ -136,24 +141,24 @@ class RecursosView(ctk.CTkFrame):
         botonesCRUD.pack_propagate(False)
         botonesCRUD.pack(padx=10, pady=10)
 
-        anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green")
+        anadirBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="➕ Añadir", fg_color="green", command=self.insertar_nueva_asignatura)
         anadirBtn.pack(side="left", padx=10)
 
-        modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue")
+        modifBtn = ctk.CTkButton(botonesCRUD, text_color="white", text="🔄 Modificar", fg_color="blue", command=self.actualizar_asignatura)
         modifBtn.pack(side="left", padx=20)
 
-        eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red")
+        eliminarBtn = ctk.CTkButton(botonesCRUD, text="❌ Eliminar", text_color="white", fg_color="red", command=self.eliminar_asignatura)
         eliminarBtn.pack(side="right", padx=10)
 
         frame_asignaturas = ctk.CTkFrame(parent, width=530, height=250)
         frame_asignaturas.pack_propagate(False)
         frame_asignaturas.configure(fg_color="black")
-        frame_asignaturas.pack(pady=10)
+        frame_asignaturas.pack(pady=10, fill="both", expand=True)
 
         self.datos_asignaturas = ctk.CTkFrame(frame_asignaturas, width=530, height=250)
         self.datos_asignaturas.pack_propagate(False)
         self.datos_asignaturas.configure(fg_color="white")
-        self.datos_asignaturas.pack(pady=10, side="top", padx=10)
+        self.datos_asignaturas.pack(pady=10, side="top", padx=10, fill="both", expand=True)
 
         scrollbar = ttk.Scrollbar(self.datos_asignaturas)
         scrollbar.pack(side="right", fill="y")
@@ -174,6 +179,8 @@ class RecursosView(ctk.CTkFrame):
 
         self.obtener_datos_asignaturas()
 
+
+    #--------------------------------------------------------------------------------------------------------------------------
     #FUNCIONES PARA MOSTRAR, ACTUALIZAR, INSERTAR Y BORRAR MATERIALES
     def obtener_datos_materiales(self):
 
@@ -208,6 +215,8 @@ class RecursosView(ctk.CTkFrame):
             messagebox.showinfo("Informacion", mensaje)
             self.obtener_datos_materiales()
 
+    # --------------------------------------------------------------------------------------------------------------------------
+    # FUNCIONES PARA MOSTRAR, ACTUALIZAR, INSERTAR Y BORRAR AULAs
     def obtener_datos_aulas(self):
         for item in self.tabla_aulas.get_children():
             self.tabla_aulas.delete(item)
@@ -242,9 +251,31 @@ class RecursosView(ctk.CTkFrame):
             messagebox.showinfo("Informacion", mensaje)
             self.obtener_datos_aulas()
 
+    # --------------------------------------------------------------------------------------------------------------------------
+    # FUNCIONES PARA MOSTRAR, ACTUALIZAR, INSERTAR Y BORRAR ASIGNATURAS
     def obtener_datos_asignaturas(self):
-        for asignatura in self.asings_controller.listar_asignaturas():
+        for item in self.tabla_asignaturas.get_children():
+            self.tabla_asignaturas.delete(item)
+
+        for asignatura in self.asign_controller.listar_asignaturas():
             self.tabla_asignaturas.insert("", "end", iid=asignatura[0], values=(asignatura[1], asignatura[2], asignatura[3], asignatura[4]))
+
+    def insertar_nueva_asignatura(self):
+        vista = AsignInsertView(self.asign_controller, self.obtener_datos_asignaturas)
+        vista.mainloop()
+
+    def actualizar_asignatura(self):
+        seleccion = self.tabla_asignaturas.selection()
+
+        if not seleccion:
+            messagebox.showerror("Error", "Seleccione un item")
+        else:
+
+            cod = seleccion[0]
+            print(cod)
+
+            vista = AsignEditView(self.asign_controller, self.obtener_datos_asignaturas, cod)
+            vista.mainloop()
 
     def eliminar_asignatura(self):
         seleccion = self.tabla_asignaturas.selection()
@@ -252,3 +283,10 @@ class RecursosView(ctk.CTkFrame):
         if not seleccion:
             messagebox.showerror("Error", "Seleccione un item")
         else:
+
+            cod = seleccion[0]
+
+            mensaje = self.asign_controller.eliminar(cod)
+
+            messagebox.showinfo("Informacion", mensaje)
+            self.obtener_datos_asignaturas()

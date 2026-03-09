@@ -33,12 +33,12 @@ class Profesores(ctk.CTkFrame):
         frame_profesores = ctk.CTkFrame(self, width=530, height=250)
         frame_profesores.pack_propagate(False)
         frame_profesores.configure(fg_color="black")
-        frame_profesores.pack(pady=10)
+        frame_profesores.pack(pady=10, fill="both", expand=True)
 
         self.datos_profesores = ctk.CTkFrame(frame_profesores, width=530, height=250)
         self.datos_profesores.pack_propagate(False)
         self.datos_profesores.configure(fg_color="white")
-        self.datos_profesores.pack(pady=10, side="top", padx=10)
+        self.datos_profesores.pack(pady=10, side="top", padx=10, fill="both", expand=True)
 
         scrollbar = ttk.Scrollbar(self.datos_profesores)
         scrollbar.pack(side="right", fill="y")

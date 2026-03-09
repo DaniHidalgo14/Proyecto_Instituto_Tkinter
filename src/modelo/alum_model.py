@@ -54,18 +54,3 @@ class AlumModel:
             cursor.execute(UPDATE_ALUMNO, (nombre, edad, telefono, direccion, cod_curso, id_alumno))
             conn.commit()
 
-    def comprobar_cod_curso(self, cod_curso) -> bool:
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-            cursor.execute('select nombre from cursos where cod_curso = ?', (cod_curso,))
-            curso = cursor.fetchone()
-            if curso is None:
-                return False
-            else:
-                return True
-
-    def obtener_ids_alumnos(self):
-        with sqlite3.connect(DB_PATH) as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT cod_alum FROM alumnos ORDER BY cod_alum")
-            return [fila[0] for fila in cursor.fetchall()]

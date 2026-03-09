@@ -20,3 +20,5 @@ DELETE_ALUMNO = '''delete from alumnos where cod_alum = ?'''
 UPDATE_ALUMNO = '''update alumnos 
                     set nombreCompleto = ?, edad = ?, telefono = ?, direccion = ?, cod_curso = ?
                     where cod_alum = ?'''
+
+OBTENER_CALIFICACIONES = '''select '''

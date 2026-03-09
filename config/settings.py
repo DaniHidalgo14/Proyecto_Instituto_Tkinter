@@ -11,8 +11,8 @@ FONDO_FRAME = "#121212"
 APP_NAME = "Gestion de Instituto"
 WINDOW_SIZE = "1000X700"
 APP_VERSION = "3.0.0"
-RESIZEABLE_W = False
-RESIZEABLE_H = False
+RESIZEABLE_W = True
+RESIZEABLE_H = True
 
 #BASE DE DATOS PROVISIONAL
 usuarios = {"danibnk14" : "12345", "juanmiS" : "98765"}

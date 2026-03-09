@@ -29,12 +29,12 @@ class Mainview(ctk.CTk):
         menu = ctk.CTkFrame(self, width=145, height=420)
         menu.configure(fg_color=FONDO_FRAME)
         menu.pack_propagate(False)
-        menu.pack(side="left")
+        menu.pack(side="left", fill="y")
 
         self.contentPane = ctk.CTkFrame(self, width=550, height=420)
         self.contentPane.configure(fg_color=FONDO_FRAME)
         self.contentPane.pack_propagate(False)
-        self.contentPane.pack(side="right")
+        self.contentPane.pack(side="right", fill="both", expand=True)
 
         tituloMn = ctk.CTkLabel(menu, text_color="white", text="Menu", font=("Arial", 20))
         tituloMn.pack(pady=25, padx=5)
