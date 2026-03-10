@@ -13,28 +13,28 @@ class Login(ctk.CTkFrame):
 
     def construir_contenedor(self):
 
-        frame = ctk.CTkFrame(self, width=150, height=150)
+        frame = ctk.CTkFrame(self, width=300, height=320)
         frame.configure(fg_color="black")
+        frame.pack_propagate(False)
         frame.pack(pady=20)
 
-        titulo_label = ctk.CTkLabel(frame, text="Iniciar sesion", font=("Arial", 20), text_color="white")
+        titulo_label = ctk.CTkLabel(frame, text="Iniciar sesion", font=("Arial", 30), text_color="white")
         titulo_label.pack(pady=20)
 
 
         self.nombreInput = ctk.CTkEntry(frame)
-        self.nombreInput.configure(fg_color="black", text_color="white", placeholder_text_color="white",
-                              placeholder_text="👤 Usuario")
-        self.nombreInput.pack(pady=10, padx=10)
+        self.nombreInput.configure(fg_color="black", text_color="white", placeholder_text_color="white", placeholder_text="👤 Usuario", height=50)
+        self.nombreInput.pack(pady=10, padx=20, fill="x", expand=True)
 
         self.apellidoInput = ctk.CTkEntry(frame)
         self.apellidoInput.configure(fg_color="black", text_color="white", placeholder_text_color="white",
-                                placeholder_text="🔒 Contraseña")
-        self.apellidoInput.pack(pady=10, padx=10)
+                                placeholder_text="🔒 Contraseña", height=50)
+        self.apellidoInput.pack(pady=10, padx=20, fill="x", expand=True)
 
-        self.boton = (ctk.CTkButton(frame, text="Pulsar", hover_color="blue", command=self.acceder)
-                 .pack(pady=10, padx=10))
+        self.boton = (ctk.CTkButton(frame, text="Pulsar", hover_color="blue", command=self.acceder, height=40)
+                 .pack(pady=10, padx=20, fill="x", expand=True))
 
-        self.label = (ctk.CTkLabel(frame, text="", text_color="white"))
+        self.label = ctk.CTkLabel(frame, text="", text_color="white")
         self.label.pack(pady=10, padx=10)
 
     def acceder(self):
