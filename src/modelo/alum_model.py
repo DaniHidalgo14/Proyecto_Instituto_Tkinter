@@ -4,6 +4,8 @@ Modelo de Alumno
 import csv
 import os
 import sqlite3
+from tkinter import messagebox
+
 from config.settings import DB_PATH
 from database.queries.alum_queries import (
     SELECT_ALL_ALUMNOS,
@@ -110,13 +112,13 @@ class AlumModel:
             alumno = cursor.fetchone()
 
             if not alumno:
-                print(f"Alumno '{nombre_alumno}' no encontrado en la base de datos")
+                messagebox.showerror("Error", f"Alumno '{nombre_alumno}' no encontrado en la base de datos")
                 return
 
             cod_alum = alumno[0]
 
             # Leer CSV
-            with open(ruta_csv, "r", encoding="utf-8") as archivo:
+            with open(ruta_csv, "r") as archivo:
                 reader = csv.reader(archivo)
                 next(reader)  # Saltar cabecera
 
@@ -128,7 +130,7 @@ class AlumModel:
                     asign = cursor.fetchone()
 
                     if not asign:
-                        print(f"Asignatura '{asignatura}' no encontrada, saltando...")
+                        messagebox.showerror("Error", f"Asignatura '{asignatura}' no encontrada, saltando...")
                         continue
 
                     cod_asign = asign[0]
@@ -136,9 +138,9 @@ class AlumModel:
                     # Insertar o actualizar notas
                     cursor.execute("""
                         INSERT OR REPLACE INTO calificaciones
-                        (cod_asign, cod_alum, trimestre1, trimestre2, trimestre3)
+                        (trimestre1, trimestre2, trimestre3, cod_alum, cod_asign)
                         VALUES (?, ?, ?, ?, ?)
-                    """, (t1, t2, t3, cod_asign, cod_alum))
+                    """, (t1, t2, t3, cod_alum, cod_asign))
 
             conn.commit()
-            print(f"Notas importadas correctamente para {nombre_alumno}")
+            messagebox.showinfo("Informacion", f"Notas importadas correctamente para {nombre_alumno}")

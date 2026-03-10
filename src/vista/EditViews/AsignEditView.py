@@ -22,10 +22,10 @@ class AsignEditView(ctk.CTk):
         self.horasEntrada = ctk.CTkEntry(self, placeholder_text="Numero de horas")
         self.horasEntrada.pack(pady=10)
 
-        self.codCursoEntrada = ctk.CTkEntry(self, placeholder_text="Codigo de curso")
+        self.codCursoEntrada = ctk.CTkEntry(self, placeholder_text="Codigo de profesor")
         self.codCursoEntrada.pack(pady=10)
 
-        self.codProfEntrada = ctk.CTkEntry(self, placeholder_text="Codigo de profesor")
+        self.codProfEntrada = ctk.CTkEntry(self, placeholder_text="Codigo de curso")
         self.codProfEntrada.pack(pady=10)
 
         guardarBtn = ctk.CTkButton(self, text="Guardar", command=self.actualizar_asignatura)

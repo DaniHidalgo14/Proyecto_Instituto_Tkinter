@@ -40,7 +40,7 @@ class Alumnos(ctk.CTkFrame):
         frame_alumno.configure(fg_color="black")
         frame_alumno.pack(pady=10, fill="both", expand=True)
 
-        frame_botones = ctk.CTkFrame(frame_alumno, width=550, height=50)
+        frame_botones = ctk.CTkFrame(frame_alumno, width=570, height=50)
         frame_botones.pack_propagate(False)
         frame_botones.configure(fg_color="black")
         frame_botones.pack(pady=10, padx=10)
@@ -52,7 +52,7 @@ class Alumnos(ctk.CTkFrame):
         exportarBtn = ctk.CTkButton(frame_botones, text="📤 Exportar", text_color="black", fg_color="yellow", hover_color="green", command=self.exportar)
         exportarBtn.pack(side="left", padx=5)
 
-        importarBtn = ctk.CTkButton(frame_botones, text="Importar", text_color="white", fg_color="blue", command=self.importar)
+        importarBtn = ctk.CTkButton(frame_botones, text="🗂️ Importar", text_color="white", fg_color="blue", command=self.importar)
         importarBtn.pack(side="left", padx=5)
 
         self.siguienteBtn = ctk.CTkButton(frame_botones, text="Siguiente ➡️", text_color="white", hover_color="blue", command=self.siguiente)
